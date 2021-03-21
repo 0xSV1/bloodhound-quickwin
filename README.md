@@ -1,16 +1,16 @@
 # bloodhound-quickwin
-Simple script to extract useful informations from the combo BloodHound + Neo4j. Can help to choose a target.
+Simple script to extract useful information and potential quick wins from BloodHound and Neo4j.
 
 ## Prerequisites
 - python3
 ```bash
-pip3 install py2neo
-pip3 install pandas
+sudo pip3 install py2neo
+sudo pip3 install pandas
 ```
 ## Example
-- Use your favorite [ingestor](https://github.com/fox-it/BloodHound.py) to gather ".json"
+- Use your favorite [collectors](https://github.com/BloodHoundAD/BloodHound/tree/master/Collectors) to gather "./zip or .json"
 - Start your neo4j console
-- Import "*.json" in [bloodhounnd](https://github.com/fox-it/BloodHound.py)
+- Import "./zip or .json" in [bloodhound](https://github.com/BloodHoundAD/BloodHound)
 - Run ./bhqc.py
 
 ## Usage
@@ -18,11 +18,11 @@ pip3 install pandas
 kaluche@pwn $ ./bhqc.py -h
 usage: bhqc.py [-h] [-b BOLT] [-u USERNAME] [-p PASSWORD]
 
-Quick win for bloodhound + neo4j
+Lists out some good quick wins from BloodHound and Neo4j. SharpHound collections must be loaded into BloodHound before running this.
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -b BOLT, --bolt BOLT  Neo4j bolt connexion (default: bolt://127.0.0.1:7687)
+Optional arguments:
+  -h, --help            Show this help message and exit
+  -b BOLT, --bolt BOLT  Neo4j bolt connection (default: bolt://127.0.0.1:7687)
   -u USERNAME, --username USERNAME
                         Neo4j username (default : neo4j)
   -p PASSWORD, --password PASSWORD
@@ -32,34 +32,34 @@ optional arguments:
 
 ## Output
 ```bash
-kaluche@pwn $ ./bhqw.py
+SV1@kali $ ./bhqw.py
 
-###########################################################
-[*] Enumerating all domains admins (rid:512|544) (recursive)
-###########################################################
+##################################################################################
+[*] Enumerating all domain admins - Groups and Users (rid:512|544) (recursive)
+##################################################################################
 
-[+] Domain admins (group) 	: DOMAIN ADMINS@FBC.LAB
-[+] Domain admins (group) 	: ENTERPRISE ADMINS@FBC.LAB
-[+] Domain admins (group) 	: FBCDIRECTION@FBC.LAB
+[+] Domain admins (group) 	  : DOMAIN ADMINS@FBC.LAB
+[+] Domain admins (group) 	  : ENTERPRISE ADMINS@FBC.LAB
+[+] Domain admins (group) 	  : FBCDIRECTION@FBC.LAB
 [+] Domain admins (enabled) 	: ADMINISTRATOR@FBC.LAB [LASTLOG: < 1 year]
 [+] Domain admins (enabled) 	: DIRECTOR.TRENCH@FBC.LAB [SPN] [LASTLOG:  NEVER]
 [+] Domain admins (enabled) 	: CASPER.DARLING@FBC.LAB [ASREP] [LASTLOG:  NEVER]
 
-###########################################################
-[*] Enumerating privileges SPN
-###########################################################
+##################################################################################
+[*] Enumerating enabled SPN service/user accounts (KERBEROASTING)
+##################################################################################
 
 [+] SPN DA (enabled) 	: DIRECTOR.TRENCH@FBC.LAB
 
-###########################################################
-[*] Enumerating privileges AS REP ROAST
-###########################################################
+##################################################################################
+[*] Enumerating enabled AS-REP service/user accounts  (AS-REP ROASTING)
+##################################################################################
 
-[+] AS-Rep Roast DA (enabled) 	: CASPER.DARLING@FBC.LAB
+[+] AS-REP Roastable DA (enabled) 	: CASPER.DARLING@FBC.LAB
 
-###########################################################
-[*] Enumerating all SPN
-###########################################################
+##################################################################################
+[*] Enumerating all service/user accounts with SPN set
+##################################################################################
 
 [+] SPN (enabled) 	: DYLAN.FADEN@FBC.LAB
 [+] SPN (enabled) 	: ATHI@FBC.LAB
@@ -68,51 +68,51 @@ kaluche@pwn $ ./bhqw.py
 [+] SPN (enabled) 	: JESSE.FADEN@FBC.LAB
 [+] SPN (disabled) 	: KRBTGT@FBC.LAB [AdminCount]
 
-###########################################################
-[*] Enumerating AS-REP ROSTING
-###########################################################
+##################################################################################
+[*] Enumerating all service/user accounts that are AS-REP Roastable
+##################################################################################
 
-[+] AS-Rep Roast (enabled) 	: FREDERICK.LANGSTON@FBC.LAB
-[+] AS-Rep Roast (enabled) 	: CASPER.DARLING@FBC.LAB [AdminCount]
+[+] AS-Rep Roastable (enabled) 	: FREDERICK.LANGSTON@FBC.LAB
+[+] AS-Rep Roastable (enabled) 	: CASPER.DARLING@FBC.LAB [AdminCount]
 
-###########################################################
-[*] Enumerating Unconstrained account
-###########################################################
+##################################################################################
+[*] Enumerating Unconstrained Delegation Accounts
+##################################################################################
 
-[+] Unconstrained user (enabled) 	: JESSE.FADEN@FBC.LAB
+[+] Unconstrained Delegation (enabled) 	: JESSE.FADEN@FBC.LAB
 
-###########################################################
-[*] Enumerating Constrained account
-###########################################################
+##################################################################################
+[*] Enumerating Constrained Delegation User Accounts
+##################################################################################
 
-[+] Constrained user (enabled) 	: DYLAN.FADEN@FBC.LAB ['snmp/dc1.FBC.LAB']
+[+] Constrained Delegation (enabled) 	: DYLAN.FADEN@FBC.LAB ['snmp/dc1.FBC.LAB']
 
-###########################################################
-[*] Enumerating Unconstrained computer
-###########################################################
+##################################################################################
+[*] Enumerating Unconstrained Computer Accounts
+##################################################################################
 
-[+] Unconstrained computer (enabled) 	: DC1.FBC.LAB [Windows Server 2016 Standard]
+[+] Unconstrained computers (enabled) : DC1.FBC.LAB [Windows Server 2016 Standard]
 
-###########################################################
-[*] Stats
-###########################################################
+##################################################################################
+[*] Statistics
+##################################################################################
 
 +--------------------------------------------+------------+-------+
 |                Description                 | Percentage | Total |
 +--------------------------------------------+------------+-------+
-|                 All users                  |    N/A     |   21  |
-|             All users (enabed)             |   85.71    |   18  |
-|            All users (disabled)            |   14.29    |   3   |
-|     Users with 'domain admins' rights      |   16.67    |   3   |
-|      Not logged (all) since 6 months       |    0.0     |   0   |
-|    Not logged (enabled) since 6 months     |    0.0     |   0   |
-| Password not changed > 1 y (enabled only)  |    0.0     |   0   |
-| Password not changed > 2 y (enabled only)  |    0.0     |   0   |
-| Password not changed > 5 y (enabled only)  |    0.0     |   0   |
-| Password not changed > 10 y (enabled only) |    0.0     |   0   |
-|               Users with SPN               |   33.33    |   6   |
-|          Users with AS REP ROAST           |   11.11    |   2   |
-|      Users enabled and has never log       |   88.89    |   16  |
+|                 Total users                |    N/A     |   21  |
+|             Total enabled user             |   85.71    |   18  |
+|            Total disabled users            |   14.29    |   3   |
+|     Users with 'Domain Admin' rights       |   16.67    |   3   |
+|      All users not logged in > 6 months    |    0.0     |   0   |
+|    Enabled users not logged in > 6 months  |    0.0     |   0   |
+| Password not changed > 1y  (enabled)       |    0.0     |   0   |
+| Password not changed > 2y  (enabled)       |    0.0     |   0   |
+| Password not changed > 5y  (enabled)       |    0.0     |   0   |
+| Password not changed > 10y (enabled)       |    0.0     |   0   |
+|      Kerberoastable users with SPN         |   33.33    |   6   |
+|      AS-REP Roastable users                |   11.11    |   2   |
+|  Enabled users that has never logged in    |   88.89    |   16  |
 +--------------------------------------------+------------+-------+
 
 ```
